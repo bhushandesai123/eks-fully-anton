@@ -1,0 +1,241 @@
+@@@@@@@@@@@@ .terraform folder = have provider file and version number only. if delete it provider version deleted so terraaform init again
+
+
+
+@@@@@@@@@@@@  terraform.lock.hcl
+
+provider "registry.terraform.io/hashicorp/aws": This specifies the AWS provider from the HashiCorp registry.
+
+version = "5.49.0": This sets the specific version of the AWS provider being used.
+
+constraints = "<= 5.49.0": This specifies that the version of the provider must be 5.49.0 or lower.
+
+hashes: This is a list of hashes used to verify the integrity of the provider plugin. These hashes ensure that the plugin downloaded matches the expected version and has not been tampered with.
+should not be edited manually.
+
+# eks_name = "dhairya-cluster"  #####just in case there are multiple eks cluster on same account then we can use this cluster name as prefix to iam role and policy
+
+
+#The following Kubernetes versions are currently available in Amazon EKS standard support:
+1.30    ####u have tell this is latest 
+1.29
+1.28
+1.27
+1.26
+1.30    ####u have tell this is latest now
+
+
+
+
+
+
+lecture video 2
+
+# if eks not there we have to manage controlplane using kops
+
+
+Q   we are not using virtual network such as flannel and calico we use vpc cni plugin instead. why?
+
+#Secondary IP Address Range: Pods receive IP addresses from a secondary IP address range assigned to worker nodes.
+
+#Amazon VPC CNI Plugin: Uses AWS native IP addresses for pods, integrating directly with VPC networking.
+
+#Not Using Flannel or Calico: Avoids overlay networks, leveraging AWS native networking features for better performance and simplified management.
+
+Amazon VPC CNI Plugin:
+
+Amazon VPC CNI Plugin: The Amazon VPC CNI plugin allows pods to receive IP addresses directly from the VPC's subnet. This makes the pods first-class citizens in the VPC, enabling direct communication with other AWS resources and services using VPC networking features.
+AWS Native IP Addresses: This means that each pod gets an IP address from the VPC subnet. The network traffic from the pods flows through the VPC, leveraging the native networking capabilities and features of AWS.
+
+
+
+
+WHY Not Using Flannel or Calico ?
+
+Flannel and Calico: These are alternative CNI plugins commonly used in Kubernetes clusters to provide networking. They create an overlay network to manage pod communication.
+Difference: By not using Flannel or Calico, the cluster avoids overlay networking complexity and benefits from the native performance and features of the AWS VPC, such as security groups and network ACLs.
+
+#amazonEc2ContainerregistryReadOnly ———> used for  Pull docker images From ECR only
+
+
+# version  = "${local.eks_version}"     # by changing its value in local variable and use terra apply to update eks cluster version  
+Main Reasons to Update an EKS Cluster
+Security Enhancements:
+new feature
+
+
+
+# you would consider a fully private EKS cluster only if  you have a specific requirement from the business or other stakeholders.
+endpoint_private_access = true kelyavar eks master pvt sub mde banto
+
+# without AmazonEKSAssumeEKSAdminPolicy can i attach user or service to role ?
+ChatGPT
+No, you cannot attach a user or service directly to a role without allowing them to assume the role through a policy that grants the sts:AssumeRole permission. 
+
+# after t apply
+1) 
+aws sts get-caller-identity  ====command is used to retrieve details about the IAM identity making the request. 
+ 
+ {
+    "UserId": "AIDAEXAMPLEID",               = 
+    "Account": "123456789012",
+    "Arn": "arn:aws:iam::123456789012:user/example-user"
+}
+UserId: The unique identifier of the IAM user or role making the request.
+Account: The AWS account ID of the caller.
+Arn: The Amazon Resource Name (ARN) of the IAM user or role making the request.
+
+#
+2)
+aws eks update-kubeconfig --region ap-south-1 --name my-cluster
+
+What This Does:
+Fetches Cluster Details: Retrieves the cluster's endpoint and certificate authority data.
+Updates Kubeconfig: Adds or updates the context in the kubeconfig file to use the retrieved endpoint and credentials.
+Sets Context: Configures kubectl to use the new context, allowing you to run kubectl commands against your EKS cluster.
+
+#
+3) check u r connected to cluster or not?
+kubectl get nodes
+
+
+
+
+#video3 anton iam rbac ..
+
+AWS IDENDITY = USER AND ROLES
+EKS IDENTITY = USER / GROUP /SERVICE ACCOUNT
+
+
+
+
+
+
+
+# video3 anoton
+
+rbac process in terra
+
+1--aws iam role 
+2--aws iam policy
+3--attach
+4--aws iam user
+5--aws iam policy
+6--attach
+7--aws eks access entry
+
+
+
+
+
+
+
+#HPA NOTES VIDEO4 ANTON
+
+--If u not gave resources (request and limit) in deployment yaml HPA wont work. if u dont use it shows unknown for targets in command---( k get hpa -n myns ). HPA uses only REQUEST values only from resource for metrics ,not LIMIT values 
+
+--To avoid conflicts between ArgoCD and HPA--
+Avoid Specifying replicas in Git Repository:
+
+If possible, avoid specifying the replicas field directly in the Deployment YAML stored in your Git repository.
+
+You can achieve this by using a placeholder or removing the replicas field, but ensure the initial Deployment has the right number of replicas before HPA takes over.
+
+
+Q--hpa is namespace object or not
+ChatGPT
+Yes, the Horizontal Pod Autoscaler (HPA) is a namespace object in Kubernetes. This means it exists within a specific namespace and can only target resources (like Deployments, ReplicaSets, or StatefulSets) within the same namespace.
+
+so use namespace in Deployment and HPA both.
+
+It also increase Replicaset value automatically according to HPA
+
+
+DEPLOYMENT
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: my-namespace
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+
+
+SERVICE
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: my-namespace
+spec:
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+
+
+HPA
+
+
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx-hpa
+  namespace: my-namespace
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx-deployment          # Use here name of Deploy not labels
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu              # we can use memory utilization instead of cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+
+
+k get hpa -n myns—-
+
+target with memory and cpu utilization shown
+
+target unknown— shows if u forget to give resource in deployment
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
