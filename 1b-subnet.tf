@@ -7,7 +7,7 @@ map_public_ip_on_launch = true                   # this line i have add- and  in
   tags = {
    "kubernetes.io/role/elb"	= "1"                  # this line i have add===This tag is used by the AWS Load Balancer Controller to automatically discover which subnets can be utilized for creating Elastic Load Balancers (ELBs).If tags are not present, you encounter errors-"could not find any suitable subnets for creating the ELB" 
       Name = "${local.eks_name}-public-sub-1a"        # this line i have add
-   "kubernetes.io/cluster/${local.eks_name}"=	"owned"      # this line i have add
+   "kubernetes.io/cluster/${local.eks_name}"=	"owned"      # #  tag indicates that the resources (like security groups and subnets) are owned by the specified Kubernetes cluster.
 
   }
 }
@@ -45,7 +45,7 @@ availability_zone = local.az2
   tags = {
    "kubernetes.io/role/internal-elb"	= "1"
       Name = "${local.eks_name}-pvt-sub-1b"
-   "kubernetes.io/cluster/${local.eks_name}"=	"owned"     #  tag indicates that the resources (like security groups and subnets) are owned by the specified Kubernetes cluster.
+   "kubernetes.io/cluster/${local.eks_name}"=	"owned"     
   }
 }
 
