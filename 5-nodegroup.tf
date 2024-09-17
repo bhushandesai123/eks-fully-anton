@@ -47,9 +47,9 @@ lifecycle {
 #   node_role_arn   = aws_iam_role.example.arn
 #   subnet_ids      = aws_subnet.example[*].id                        # add this urself. so give in ARRAY, MEAN [] GIVE SUBNET IN SQUARE BLOCK. u may use single zone to reduce cost also but there is small chance of failure
 
-#   scaling_config {                                               # this will create auto scaling group check on aws
+#   scaling_config {                                               # this will create auto scaling group suddenly after cluster ready- before we crate autoscaler but ASG start working after autoscaler added.
 #     desired_size = 1                                       # desired size property in ASG updated on aws by eks autoscaler
-#     max_size     = 2
+#     max_size     = 2                                      # until autoscaler added on eks this wont work
 #     min_size     = 1
 #   }
 
