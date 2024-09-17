@@ -1,6 +1,6 @@
-# https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/
+# https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/          --- this k8s site
 # here search kind: HorizontalPodAutoscaler - u get 3 yaml but last yaml is this given below
-
+# cloud with raj ---https://youtu.be/3BnrXapY7zo?si=3Q2yH8AT4moymyQH
 
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
