@@ -73,3 +73,22 @@ lifecycle {
 #     aws_iam_role_policy_attachment.example-AmazonEC2ContainerRegistryReadOnly,
 #   ]
 # }
+
+
+
+
+#DIFFERENCE IN AWS Managed Node Group & Self-Managed Node Group
+
+#1
+# AWS Managed Node Group: Automatically handles scaling and integrates with AWS EKS control plane.
+# Self-Managed Node Group: Requires manual scaling and uses AWS Auto Scaling groups with separate configuration.
+
+#2
+# AWS Managed Node Group: Automatically updates nodes with EKS version upgrades.
+# Self-Managed Node Group: Requires manual updates for nodes and Kubernetes version upgrades.
+
+#3
+#AWS Managed Node Group= what we created in this code
+#resource "aws_eks_node_group" "managed" {}
+#Self-Managed Node Group
+#resource "aws_autoscaling_group" "self_managed" {}
