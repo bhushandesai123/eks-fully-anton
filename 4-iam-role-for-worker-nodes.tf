@@ -15,15 +15,15 @@ resource "aws_iam_role" "example-1" {
 
 resource "aws_iam_role_policy_attachment" "example-AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.example.name
+  role       = aws_iam_role.example-1.name
 }
 
 resource "aws_iam_role_policy_attachment" "example-AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"                   # to manage secondery IP 
-  role       = aws_iam_role.example.name
+  role       = aws_iam_role.example-1.name
 }
 
 resource "aws_iam_role_policy_attachment" "example-AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.example.name
+  role       = aws_iam_role.example-1.name
 }
