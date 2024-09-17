@@ -5,9 +5,13 @@ resource "aws_eks_cluster" "example" {
   name     = "${local.env}-${local.eks_name}"
   role_arn = aws_iam_role.example.arn
 
+
+
   vpc_config {
     subnet_ids = [aws_subnet.pvt-1a.id, aws_subnet.pvt-1b.id]
   }
+
+
 
   # Ensure that IAM Role permissions are created before and deleted after EKS Cluster handling.
   # Otherwise, EKS will not be able to properly delete EKS managed EC2 infrastructure such as Security Groups.
@@ -41,6 +45,8 @@ output "endpoint" {
 #     # aws_subnet.public_us_east_1a.id,
 #     # aws_subnet.public_us_east_1b.id
 #     ]
+#                                         #   The subnets specified in vpc_config are critical for establishing communication between the worker nodes and the EKS control plane.
+#                                         #    They also help configure network settings and security groups, ensuring that your cluster operates correctly within your VPC.
 #   }
 
 #   depends_on = [aws_iam_role_policy_attachment.demo_amazon_eks_cluster_policy]
