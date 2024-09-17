@@ -20,3 +20,72 @@ spec:
       target:
         type: Utilization
         averageUtilization: 50
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-apache
+spec:
+  selector:
+    matchLabels:
+      run: php-apache
+  template:
+    metadata:
+      labels:
+        run: php-apache
+    spec:
+      containers:
+      - name: php-apache
+        image: registry.k8s.io/hpa-example
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-apache
+  labels:
+    run: php-apache
+spec:
+  ports:
+  - port: 80
+  selector:
+    run: php-apache
+---
+
+give process to install metric server on killerkoda?
+
+Deploy Metrics Server:
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+Edit Deployment for TLS Settings:
+kubectl -n kube-system edit deployment metrics-server
+
+In the deployment spec, update the command section to include:
+command:
+  - /metrics-server
+  - --kubelet-insecure-tls
+  - --kubelet-preferred-address-types=InternalIP
+
+Verify Deployment:
+kubectl get deployment metrics-server -n kube-system
+
+You should see output indicating that the desired number of pods is running.
+kubectl logs <metrics-server-pod-name> -n kube-system
+
+View Node Metrics:
+kubectl top nodes
+
+increase load
+kubectl run -i --tty load-generator --rm --image=busybox:1.28 --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
+
+
+reduce load
+ctrl+c and exit
