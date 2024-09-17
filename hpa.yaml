@@ -1,3 +1,7 @@
+# https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/
+# here search kind: HorizontalPodAutoscaler - u get 3 yaml but last yaml is this given below
+
+
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
