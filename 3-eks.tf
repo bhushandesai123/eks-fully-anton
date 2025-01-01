@@ -53,5 +53,6 @@ output "endpoint" {
 # }
 # access_config {                                         # P1 From here access config below 3 lines i added not in terra registry
 #   authentication_mode = "API"   (or "CONFIG_MAP")       # aws auth configmap is deprecated so we are using API. but still u can use auth_configmap to create new users but its best practice to use API 
-#   bootstrap_cluster_creator_admin_permissions= true     # P3 Ensuring the creator has admin permissions may not bydefault true so deun taka 
+#   bootstrap_cluster_creator_admin_permissions= true     # P3 This may not bydefault true so deun taka . The IAM entity (user or role) that creates the cluster is automatically added to the system:masters group in the Kubernetes cluster.
+
 # }
