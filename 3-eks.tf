@@ -8,7 +8,7 @@ resource "aws_eks_cluster" "example" {
 
 
   vpc_config {
-    subnet_ids = [aws_subnet.pvt-1a.id, aws_subnet.pvt-1b.id]
+    subnet_ids = [aws_subnet.pvt-1a.id, aws_subnet.pvt-1b.id]       #### here 1 public subnet must because if not given LB created will be internal LB which not connected to internet
   }
 
 
