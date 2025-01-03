@@ -1,5 +1,6 @@
-# AWS IAM ASSUME ROLE CREATION =# AWS IAM ROLE CREATION
-# AWS IAM ROLE CREATION = adding principle in it. here principle = who going to assume this role. 
+# AWS IAM ROLE = AWS IAM ROLE +  ASSUME ROLE POLICY ATTACHING TO THIS ROLE(it can be given by datablock also for openid connector)  + PRINCIPAL(WHO ASSUME 
+# ABOVE  CRUX= IAM ROLE CREATION ON CONSOLE ONLY. CONSOLE GIVES ROLE WITH ASSUME ROLE DIRECTLY BUT TERRAFORM ADDED EXTRA STEP TO GIVE ASSUMEROLE POLICY TO ROLE
+ 
 # EXAMPLE--   "Principal": {
 #              "Service": "eks.amazonaws.com",                      #  ADDED SERVICE
 #               "AWS": "arn:aws:iam::123456789012:user/devops"      #  ADDED IAM USER
